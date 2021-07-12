@@ -16,7 +16,7 @@ A residual file is the residual data -- deviation in mrad.
 These exist for the Left HRS and Right HRS, for horizontal beam
 positions of 0, -3 and +3 mm (approximately).
 
-/monte  -- directory
+/monte  -- directory.
 A simple example of how to use the HrsTrkCorr library:
 See the README file in /monte for further instructions.
 
