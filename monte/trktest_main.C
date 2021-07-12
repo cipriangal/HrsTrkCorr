@@ -27,8 +27,8 @@ int main(int argc, char **argv) {
      trkcorr->Load(xbeam, tg_ph, tg_th);     // must load the class
 
 // which sign ?
-// To correct the tracks and bring them closer to sieve holes: xsign = +1
-// To move the "ideal" tracks closer to misreconstructed tracks: xsign = -1
+// To correct the tracks and bring them closer to sieve holes: xsign = -1
+// To move the "ideal" tracks closer to misreconstructed tracks: xsign = +1
      
      tg_ph = tg_ph + xsign * trkcorr->GetDeltaTgPh();
      tg_th = tg_th + xsign * trkcorr->GetDeltaTgTh();
