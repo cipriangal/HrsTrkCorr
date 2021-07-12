@@ -1,0 +1,46 @@
+# Angle residuals for L-HRS for X_beam = +3.8 mm, run 2239
+# Each triplet of lines is
+# column number
+# tg_th values for rows 0 to 5.  If no value it is -999.
+# tg_ph values for rows 0 to 5.  ditto.  units: mrad
+
+col=3
+tg_th= -999  -999  -999  -999  -999  -999
+tg_ph= -999  -999  -999  -999  -999  -999
+#
+col=4
+tg_th= -1.6  -1   -0.2   1.1    0.5   1.
+tg_ph= 2.0  2.0   1.6   1.6   1.8   1.5
+#
+col=5
+tg_th= -999  -1   -0.6   0.8   2.2   2.2  
+tg_ph= -999  2.3   1.3   1.7   1.8   2.0
+#
+col=6
+tg_th= -999  -0.7  -0.6    0.3   1.0  1.4
+tg_ph= -999  2.2   1.6     1.5   1.6  1.8
+#
+col=7
+tg_th=  -1.6  0   0.9    0.4  1.3   1.6
+tg_ph=  1.9   2.0  1.5   1.9  1.4   1.8
+#
+col=8
+tg_th= -999  -1.3   0   -0.2    0.8   1.1
+tg_ph= -999  2.0  1.9    1.4    1.6   2.0
+#
+col=9
+tg_th= -999  -0.7   -0.5   0    1.0   2.1
+tg_ph= -999   2.4   1.5   1.5   1.4   1.8
+#
+col=10
+tg_th= -999   0   0.5   0     2.0  -999
+tg_ph= -999 2.1   1.6   1.5   1.8  -999
+#
+col=11
+tg_th= -999  -999  0    0.8   1.2  -999
+tg_ph= -999  -999 1.8   1.9  2.0  -999
+#
+col=12
+tg_th= -999  -999  0    0.5  -999 -999
+tg_ph= -999  -999  2.0  1.6  -999 -999
+
