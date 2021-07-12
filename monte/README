@@ -1,0 +1,25 @@
+R. Michaels
+July 11, 2021
+
+This contains a simple example of how to use HrsTrkCorr in
+a compiled code like a Monte Carlo.
+
+You can type "make" to compile the executible "xtest", then
+run xtest by typing
+
+          ./xtest
+
+libtrkcorr.so  is found from $DIR_TRKCORR in the Makefile
+Likewise, this points to the header HrsTrkCorr.h
+
+trktest_main.C  -- the main code
+xtest  -- the executible
+
+holefiles is a directory with the "hole files" and the
+"residuals" that are required for running HrsTrkCorr.
+Generally it would be in ../holefiles relative to where
+you are now, so do this (or the equivalent if you put
+holefiles somewhere else).
+
+   ln -s ../holefiles holefiles
+   
