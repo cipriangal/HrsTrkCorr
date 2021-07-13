@@ -70,13 +70,13 @@ HrsTrkCorr::HrsTrkCorr(hrstype_t which_spectrometer): did_init(0), fSpect(which_
       file_holes_p3 = "./holefiles/holes_LeftHRS_plus3.dat";  // run 2239
 // X_beam = 0
       file_holes_0 = "./holefiles/holes_LeftHRS_0.dat";       // run 2240
-      file_resid_m3 = "./holefiles/resid_LeftHRS_minus3.dat"; // run 21365
-      file_resid_p3 = "./holefiles/resid_LeftHRS_plus3.dat";  // run 21363
-      file_resid_0 = "./holefiles/resid_LeftHRS_0.dat";       // run 21364
+      file_resid_m3 = "./holefiles/resid_LeftHRS_minus3.dat"; 
+      file_resid_p3 = "./holefiles/resid_LeftHRS_plus3.dat";  
+      file_resid_0 = "./holefiles/resid_LeftHRS_0.dat";       
   } else if (fSpect == kRight) {
-      file_holes_m3 = "./holefiles/holes_RightHRS_minus3.dat";
-      file_holes_p3 = "./holefiles/holes_RightHRS_plus3.dat"; 
-      file_holes_0 = "./holefiles/holes_RightHRS_0.dat";
+      file_holes_m3 = "./holefiles/holes_RightHRS_minus3.dat"; // run 21365
+      file_holes_p3 = "./holefiles/holes_RightHRS_plus3.dat";  // run 21363
+      file_holes_0 = "./holefiles/holes_RightHRS_0.dat";       // run 21364  
       file_resid_m3 = "./holefiles/resid_RightHRS_minus3.dat";
       file_resid_p3 = "./holefiles/resid_RightHRS_plus3.dat";
       file_resid_0 = "./holefiles/resid_RightHRS_0.dat";
@@ -227,10 +227,10 @@ void HrsTrkCorr::Load(Double_t x_beam, Double_t tg_ph, Double_t tg_th) {
 
   // Assumptions !
   // within +/- fXTol of X=0 use the residuals for x=0
-  // Assuming fBeam[1] = +3.8  and fBeam[2] = -3.2, so it's not very general.
-  // If X_beam within fXTol of fBeam[1] or X_beam > fBeam[1]+fXTol
-  // use the residuals for fBeam[1].
-  // Similar logic for fBeam[2].
+  // Assuming fXBeam[1] = +3.8  and fXBeam[2] = -3.2, so it's not very general.
+  // If X_beam within fXTol of fXBeam[1] or X_beam > fXBeam[1]+fXTol
+  // use the residuals for fXBeam[1].
+  // Similar logic for fXBeam[2].
   // In between, we interpolate in x_beam
   
   ix  = -1;
