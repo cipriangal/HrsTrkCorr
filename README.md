@@ -3,8 +3,10 @@ for residuals in track angles for the reconstruction at the target.
 
 R. Michaels, July 2021
 
-HrsTrkCorr.C  -- implementaion;
-HrsTrkCorr.h  -- header;
+HrsTrkCorr.C  -- implementaion
+
+HrsTrkCorr.h  -- header
+
 Makefile  -- use to complie the library, which can be used for
              codes like Monte Carlos
 
