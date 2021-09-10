@@ -26,10 +26,13 @@ class HrsTrkCorr {
 
     void Print(std::string filename="none");
  
+    //set number of sigma for finding neighbour holes
+    void SetRtolerance(double val){fRTol=val;}
+
 // Must load TRANSPORT angles each event.  First arg is X_beam (mm).
 // 2nd arg tg_ph (horizontal), 3rd arg is tg_th (vertical)
 
-     void Load(Double_t x_beam, Double_t tg_ph, Double_t tg_th);
+    void Load(Double_t x_beam, Double_t tg_ph, Double_t tg_th, int nNeighbor=1, int debug=0);
 
 // Get sieve hole locations
      Double_t GetHoleTgPh(Int_t ix, Int_t col, Int_t row);

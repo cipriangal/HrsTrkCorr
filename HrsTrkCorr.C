@@ -207,7 +207,7 @@ Int_t HrsTrkCorr::Init() {
   return did_init;
 }
 
-void HrsTrkCorr::Load(Double_t x_beam, Double_t tg_ph, Double_t tg_th) {
+void HrsTrkCorr::Load(Double_t x_beam, Double_t tg_ph, Double_t tg_th, int nNeighbor, int debug) {
 
 // x_beam = horizontal beam position in millimeters.  (this would be called Y in TRANSPORT).
 // tg_ph and tg_th are horizontal and vertical TRANSPORT angles (tangents)
@@ -270,6 +270,8 @@ void HrsTrkCorr::Load(Double_t x_beam, Double_t tg_ph, Double_t tg_th) {
   Int_t colmin=-1;
   Int_t rowmin=-1;
   rrmin = fRTol;
+  std::vector<double> dr,dth,dph,vCol,vRow;
+
 // Minimize radius in "angle space" to find hole for X=0
   for (col=0; col<MAXCOL; col++) {
     if (col_has_hole[col]==1) {
@@ -279,6 +281,12 @@ void HrsTrkCorr::Load(Double_t x_beam, Double_t tg_ph, Double_t tg_th) {
 	   thdiff = tg_th - tgth_hole[idx];  
 	   phdiff = tg_ph - tgph_hole[idx];
            rrad = TMath::Sqrt( ((thdiff*thdiff)/(fWidTh*fWidTh)) + ((phdiff*phdiff)/(fWidPh*fWidPh)) );
+	   
+	   vCol.push_back(col);
+	   vRow.push_back(row);
+	   dr.push_back(rrad);
+	   dth.push_back(thdiff);
+	   dph.push_back(phdiff);
 
 	   if (rrad < rrmin) {
              rrmin = rrad;
@@ -290,57 +298,99 @@ void HrsTrkCorr::Load(Double_t x_beam, Double_t tg_ph, Double_t tg_th) {
       }
   }
 
+  double deltaTh(0),deltaPh(0),sumThWght(0),sumPhWght(0);
+
 // found hole for X=0, now find the delta angles
+  if(debug)
+    std::cout<<"1by hand "<<colmin<<" "<<rowmin<<" "<<tg_th<<" "<<tg_ph<<std::endl;
   
   if (colmin > -1 && rowmin > -1) {
+    if(debug)
+      std::cout<<"2by hand "<<colmin<<" "<<rowmin<<std::endl;
+    for(int inb=0;inb<nNeighbor;inb++){
+      int index = std::distance(dr.begin(), std::min_element(dr.begin(),dr.end()));
+      if(debug)
+	std::cout<<"index "<<index<<" "<<dr[index]<<std::endl;
+      colmin = vCol[index];
+      rowmin = vRow[index];
+      dr[index]=999;//now it's not the smallest
 
-    switch(ix2) {
-
+      switch(ix2) {
+	
       case -1:
-
+	
         if ((GetResidTgTh(ix,colmin,rowmin) >fNotFound) &&
 	    (GetResidTgPh(ix,colmin,rowmin) >fNotFound)) {  
-
+	  
 	  deltaph = GetResidTgPh(ix,colmin,rowmin);
           deltath = GetResidTgTh(ix,colmin,rowmin);
-
+	  
 	}
         break;
-
+	
       case 0:
       case 1:
-
-    // Use distance to holes to weight the residuals
-
+	
+	// Use distance to holes to weight the residuals
+	
         xbdiff0 = x_beam - fXbeam[ix];
         xbdiff2 = fXbeam[ix2] - x_beam;
         xbsum = xbdiff0 + xbdiff2;
         if (xbsum > 0) {
-	    xfract0 = xbdiff0/xbsum;
+	  xfract0 = xbdiff0/xbsum;
 	} else {
-  	    xfract0 = 0;
-	    printf("HrsTrkCorr: <= 0 sum distance ? %d %d %f %f %f %f %f \n",ix,ix2,fXbeam[ix],fXbeam[ix2],x_beam,xbdiff0,xbdiff2);
-	    if(locdeb) sleep(5);
+	  xfract0 = 0;
+	  printf("HrsTrkCorr: <= 0 sum distance ? %d %d %f %f %f %f %f \n",ix,ix2,fXbeam[ix],fXbeam[ix2],x_beam,xbdiff0,xbdiff2);
+	  if(locdeb) sleep(5);
 	}
         xfract2 = 1.0 - xfract0;
-
-// only if they are all defined
+	
+	// only if they are all defined
  	if ((GetResidTgTh(ix,colmin,rowmin) >fNotFound) &&
 	    (GetResidTgTh(ix2,colmin,rowmin)>fNotFound) &&
 	    (GetResidTgPh(ix,colmin,rowmin) >fNotFound) &&
 	    (GetResidTgPh(ix2,colmin,rowmin)>fNotFound)) { 
-
-  	    deltaph = xfract0*GetResidTgPh(ix,colmin,rowmin) + xfract2*GetResidTgPh(ix2,colmin,rowmin);
-            deltath = xfract0*GetResidTgTh(ix,colmin,rowmin) + xfract2*GetResidTgTh(ix2,colmin,rowmin);
+	  
+	  deltaph = xfract0*GetResidTgPh(ix,colmin,rowmin) + xfract2*GetResidTgPh(ix2,colmin,rowmin);
+	  deltath = xfract0*GetResidTgTh(ix,colmin,rowmin) + xfract2*GetResidTgTh(ix2,colmin,rowmin);
 	}
 	
-      break;
-    }
-  }
+	break;
+      }//switch
+      if(debug){
+	std::cout<<"deltaT "<<deltaTh<<" "<<deltath<<" "<<dth[index]<<std::endl;
+	std::cout<<"deltaP "<<deltaPh<<" "<<deltaph<<" "<<dph[index]<<std::endl;
+      }
+      deltaTh += deltath*dr[index];
+      deltaPh += deltaph*dr[index];
+
+      sumThWght += dr[index];
+      sumPhWght += dr[index];
+      if(debug){
+	std::cout<<inb<<" det mins "<<colmin<<" "<<rowmin<<std::endl;
+	std::cout<<sumThWght<<" wgt "<<sumPhWght<<std::endl<<std::endl;
+      }
+
+    }//neighbor loop
+  }//if
   
+  if(debug)
+    std::cout<<sumThWght<<" Final wgt "<<sumPhWght<<std::endl;
+  if(sumPhWght!=0 && sumThWght!=0){
+    deltaph = deltaPh/sumPhWght;
+    deltath = deltaTh/sumThWght;
+  }
+  if(debug)
+    std::cout<<std::scientific<<deltath<<" deltas "<<deltaph<<std::endl;
+
   newtgph = tg_ph - deltaph;
   newtgth = tg_th - deltath;
 
+  if(debug){
+    std::cout<<newtgth<<" newAngles "<<newtgph<<std::endl<<std::endl<<std::endl;
+    // if(sumPhWght!=0 && sumThWght!=0 && abs(deltaph)>0.01)
+    //   std::cin.ignore();
+  }
   if (locdeb) std::cout << "tg_ph "<<tg_ph<<"  "<<deltaph<<"  "<<newtgph<<"  tg_th "<<tg_th<<"  "<<deltath<<"  "<<newtgth<<std::endl;
   
 }
